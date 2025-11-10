@@ -70,4 +70,34 @@ class User extends Authenticatable
     {
         return $this->hasMany(SearchHistory::class);
     }
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+
+    /**
+     * Obtener favoritos por tipo de media
+     */
+    public function getFavoritesByType($type)
+    {
+        return $this->favorites()->ofType($type)->recent()->get();
+    }
+
+    /**
+     * Obtener watchlist por estado
+     */
+    public function getWatchlistByStatus($status)
+    {
+        return $this->watchlist()->where('status', $status)->recentlyUpdated()->get();
+    }
+
+    /**
+     * Obtener búsquedas recientes
+     */
+    public function getRecentSearches($limit = 10)
+    {
+        return SearchHistory::getRecentUnique($this->id, $limit);
+    }
+=======
+>>>>>>> feature/3-integracin-con-api-de-tmdb-end
+>>>>>>> Stashed changes
 }

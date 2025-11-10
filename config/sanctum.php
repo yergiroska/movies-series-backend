@@ -16,6 +16,15 @@ return [
     */
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+<<<<<<< Updated upstream
+=======
+        '%s%s',
+<<<<<<< HEAD
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+=======
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1,localhost:5173',
+>>>>>>> feature/3-integracin-con-api-de-tmdb-end
+>>>>>>> Stashed changes
         Sanctum::currentApplicationUrlWithPort(),
         // Sanctum::currentRequestHost(),
     ))),
