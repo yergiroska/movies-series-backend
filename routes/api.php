@@ -14,6 +14,19 @@ use Illuminate\Http\Request;
 |
 */
 
+// Ruta de prueba TMDB (temporal)
+Route::get('/tmdb-test', function () {
+    $tmdb = new \App\Services\TmdbService();
+
+    $popular = $tmdb->getPopularTVShows();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'TMDB API funcionando correctamente',
+        'sample_data' => $popular
+    ]);
+});
+
 // Ruta de prueba (sin autenticación)
 Route::get('/test', function () {
     return response()->json([
