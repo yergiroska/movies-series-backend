@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -44,5 +45,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Relación con Favoritos Un usuario puede tener varios favoritos
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * Relación con Watchlist un usuario puede tener varios items en watchlist
+     */
+    public function watchlist()
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
+     * Relación con Historial de búsquedas de un usuario.
+     */
+    public function searchHistory()
+    {
+        return $this->hasMany(SearchHistory::class);
     }
 }
