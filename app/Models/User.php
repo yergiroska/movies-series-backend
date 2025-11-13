@@ -70,9 +70,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(SearchHistory::class);
     }
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 
     /**
      * Obtener favoritos por tipo de media
@@ -97,7 +94,4 @@ class User extends Authenticatable
     {
         return SearchHistory::getRecentUnique($this->id, $limit);
     }
-=======
->>>>>>> feature/3-integracin-con-api-de-tmdb-end
->>>>>>> Stashed changes
 }
