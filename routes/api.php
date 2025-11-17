@@ -1,5 +1,8 @@
 <?php
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\WatchlistController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -45,6 +48,38 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Usuario autenticado
     Route::get('/user', [AuthController::class, 'user']);
+
+    // Rutas de Favoritos
+    Route::prefix('favorites')->group(function () {
+        Route::get('/', [FavoriteController::class, 'index']);
+        Route::post('/', [FavoriteController::class, 'store']);
+        Route::delete('/{id}', [FavoriteController::class, 'destroy']);
+        Route::get('/check/{mediaType}/{tmdbId}', [FavoriteController::class, 'check']);
+        Route::delete('/{mediaType}/{tmdbId}', [FavoriteController::class, 'destroyByTmdb']);
+    });
+
+    // Rutas de Watchlist
+    Route::prefix('watchlist')->group(function () {
+        Route::get('/', [WatchlistController::class, 'index']);
+        Route::post('/', [WatchlistController::class, 'store']);
+        Route::put('/{id}', [WatchlistController::class, 'update']);
+        Route::delete('/{id}', [WatchlistController::class, 'destroy']);
+        Route::get('/check/{mediaType}/{tmdbId}', [WatchlistController::class, 'check']);
+    });
+
+    // Rutas del Historial de Búsquedas
+    Route::prefix('search')->group(function () {
+        Route::post('/history', [SearchController::class, 'store']);
+        Route::get('/history', [SearchController::class, 'index']);
+        Route::delete('/history', [SearchController::class, 'clear']);
+        Route::delete('/history/{id}', [SearchController::class, 'destroy']);
+    });
+
+    // Rutas de Perfil de Usuario
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::put('/profile/password', [AuthController::class, 'updatePassword']);
+    Route::delete('/profile', [AuthController::class, 'deleteAccount']);
 });
 
 // Rutas de Películas (públicas)

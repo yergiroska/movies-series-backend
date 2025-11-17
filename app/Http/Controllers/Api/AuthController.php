@@ -82,4 +82,106 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    /**
+     * Obtener perfil completo con estadísticas
+     */
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+
+        // Estadísticas del usuario
+        $stats = [
+            'total_favorites' => $user->favorites()->count(),
+            'total_watchlist' => $user->watchlist()->count(),
+            'movies_watchlist' => $user->watchlist()->where('media_type', 'movie')->count(),
+            'tv_watchlist' => $user->watchlist()->where('media_type', 'tv')->count(),
+            'completed' => $user->watchlist()->where('status', 'completed')->count(),
+            'watching' => $user->watchlist()->where('status', 'watching')->count(),
+            'plan_to_watch' => $user->watchlist()->where('status', 'plan_to_watch')->count(),
+            'total_searches' => $user->searchHistory()->count(),
+        ];
+
+        return response()->json([
+            'user' => $user,
+            'stats' => $stats,
+        ]);
+    }
+
+    /**
+     * Actualizar perfil
+     */
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $request->user()->id,
+        ]);
+
+        $user = $request->user();
+        $user->update($request->only(['name', 'email']));
+
+        return response()->json([
+            'message' => 'Perfil actualizado exitosamente',
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Cambiar contraseña
+     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        // Verificar contraseña actual
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'La contraseña actual es incorrecta',
+            ], 422);
+        }
+
+        // Actualizar contraseña
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return response()->json([
+            'message' => 'Contraseña actualizada exitosamente',
+        ]);
+    }
+
+    /**
+     * Eliminar cuenta
+     */
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        $user = $request->user();
+
+        // Verificar contraseña
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Contraseña incorrecta',
+            ], 422);
+        }
+
+        // Eliminar todos los tokens
+        $user->tokens()->delete();
+
+        // Eliminar cuenta (cascade eliminará favoritos, watchlist, búsquedas)
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Cuenta eliminada exitosamente',
+        ]);
+    }
 }
