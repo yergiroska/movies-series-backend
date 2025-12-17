@@ -121,4 +121,24 @@ class TVController extends Controller
 
         return response()->json($shows);
     }
+
+    public function getProviders($id)
+    {
+        try {
+            $response = $this->tmdb->getTVProviders($id);  // ← Solo el ID
+
+            if (!$response) {
+                return response()->json([
+                    'error' => 'No se pudieron obtener proveedores'
+                ], 500);
+            }
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'No se pudieron obtener los proveedores',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

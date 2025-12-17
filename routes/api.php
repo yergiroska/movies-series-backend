@@ -1,7 +1,9 @@
 <?php
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\MovieController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\TVController;
 use App\Http\Controllers\Api\WatchlistController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -84,20 +86,24 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Rutas de Películas (públicas)
 Route::prefix('movies')->group(function () {
-    Route::get('/popular', [App\Http\Controllers\Api\MovieController::class, 'popular']);
-    Route::get('/top-rated', [App\Http\Controllers\Api\MovieController::class, 'topRated']);
-    Route::get('/upcoming', [App\Http\Controllers\Api\MovieController::class, 'upcoming']);
-    Route::get('/search', [App\Http\Controllers\Api\MovieController::class, 'search']);
-    Route::get('/{id}', [App\Http\Controllers\Api\MovieController::class, 'show']);
-    Route::get('/{id}/similar', [App\Http\Controllers\Api\MovieController::class, 'similar']);
+    Route::get('/popular', [MovieController::class, 'popular']);
+    Route::get('/top-rated', [MovieController::class, 'topRated']);
+    Route::get('/upcoming', [MovieController::class, 'upcoming']);
+    Route::get('/search', [MovieController::class, 'search']);
+    Route::get('/{id}', [MovieController::class, 'show']);
+    Route::get('/{id}/similar', [MovieController::class, 'similar']);
 });
 
 // Rutas de Series (públicas)
 Route::prefix('tv')->group(function () {
-    Route::get('/popular', [App\Http\Controllers\Api\TVController::class, 'popular']);
-    Route::get('/top-rated', [App\Http\Controllers\Api\TVController::class, 'topRated']);
-    Route::get('/on-the-air', [App\Http\Controllers\Api\TVController::class, 'onTheAir']);
-    Route::get('/search', [App\Http\Controllers\Api\TVController::class, 'search']);
-    Route::get('/{id}', [App\Http\Controllers\Api\TVController::class, 'show']);
-    Route::get('/{id}/similar', [App\Http\Controllers\Api\TVController::class, 'similar']);
+    Route::get('/popular', [TVController::class, 'popular']);
+    Route::get('/top-rated', [TVController::class, 'topRated']);
+    Route::get('/on-the-air', [TVController::class, 'onTheAir']);
+    Route::get('/search', [TVController::class, 'search']);
+    Route::get('/{id}', [TVController::class, 'show']);
+    Route::get('/{id}/similar', [TVController::class, 'similar']);
 });
+
+// Watch Providers
+Route::get('/movies/{id}/providers', [MovieController::class, 'getProviders']);
+Route::get('/tv/{id}/providers', [TVController::class, 'getProviders']);

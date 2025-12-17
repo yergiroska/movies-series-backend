@@ -121,4 +121,24 @@ class MovieController extends Controller
 
         return response()->json($movies);
     }
+
+    public function getProviders($id)
+    {
+        try {
+            $response = $this->tmdb->getMovieProviders($id);  // ← Solo el ID
+
+            if (!$response) {
+                return response()->json([
+                    'error' => 'No se pudieron obtener proveedores'
+                ], 500);
+            }
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'No se pudieron obtener los proveedores',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

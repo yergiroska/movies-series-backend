@@ -180,4 +180,22 @@ class TmdbService
         }
         return $this->imageBaseUrl . $size . $path;
     }
+
+    // ==================== WATCH PROVIDERS ====================
+
+    /**
+     * Obtener proveedores de streaming para película
+     */
+    public function getMovieProviders($id)
+    {
+        return $this->get("movie/{$id}/watch/providers");
+    }
+
+    /**
+     * Obtener proveedores de streaming para serie
+     */
+    public function getTVProviders($id)
+    {
+        return $this->get("tv/{$id}/watch/providers");
+    }
 }
