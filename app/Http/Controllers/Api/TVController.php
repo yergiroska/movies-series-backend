@@ -141,4 +141,64 @@ class TVController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Obtener géneros de series
+     */
+    public function genres()
+    {
+        try {
+            $genres = $this->tmdb->getTVGenres();
+
+            if (!$genres) {
+                return response()->json([
+                    'error' => 'No se pudieron obtener los géneros'
+                ], 500);
+            }
+
+            return response()->json($genres);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener géneros',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Descubrir series (con filtros)
+     */
+    public function discover(Request $request)
+    {
+        try {
+            $params = [
+                'page' => $request->query('page', 1),
+            ];
+
+            // Filtro por género
+            if ($request->has('genre')) {
+                $params['with_genres'] = $request->query('genre');
+            }
+
+            // Filtro por año
+            if ($request->has('year')) {
+                $params['first_air_date_year'] = $request->query('year');
+            }
+
+            $shows = $this->tmdb->discoverTV($params);
+
+            if (!$shows) {
+                return response()->json([
+                    'error' => 'No se pudieron obtener series'
+                ], 500);
+            }
+
+            return response()->json($shows);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener series',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

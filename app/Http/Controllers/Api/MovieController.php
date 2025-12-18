@@ -141,4 +141,64 @@ class MovieController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Obtener géneros de películas
+     */
+    public function genres()
+    {
+        try {
+            $genres = $this->tmdb->getMovieGenres();
+
+            if (!$genres) {
+                return response()->json([
+                    'error' => 'No se pudieron obtener los géneros'
+                ], 500);
+            }
+
+            return response()->json($genres);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener géneros',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Descubrir películas (con filtros)
+     */
+    public function discover(Request $request)
+    {
+        try {
+            $params = [
+                'page' => $request->query('page', 1),
+            ];
+
+            // Filtro por género
+            if ($request->has('genre')) {
+                $params['with_genres'] = $request->query('genre');
+            }
+
+            // Filtro por año
+            if ($request->has('year')) {
+                $params['primary_release_year'] = $request->query('year');
+            }
+
+            $movies = $this->tmdb->discoverMovies($params);
+
+            if (!$movies) {
+                return response()->json([
+                    'error' => 'No se pudieron obtener películas'
+                ], 500);
+            }
+
+            return response()->json($movies);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener películas',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

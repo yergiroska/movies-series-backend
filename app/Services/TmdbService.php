@@ -168,19 +168,6 @@ class TmdbService
         ]);
     }
 
-    // ==================== HELPERS ====================
-
-    /**
-     * Obtener URL completa de imagen
-     */
-    public function getImageUrl($path, $size = 'w500')
-    {
-        if (!$path) {
-            return null;
-        }
-        return $this->imageBaseUrl . $size . $path;
-    }
-
     // ==================== WATCH PROVIDERS ====================
 
     /**
@@ -197,5 +184,52 @@ class TmdbService
     public function getTVProviders($id)
     {
         return $this->get("tv/{$id}/watch/providers");
+    }
+
+    // ==================== GENRES ====================
+
+    /**
+     * Obtener lista de géneros de películas
+     */
+    public function getMovieGenres()
+    {
+        return $this->get('genre/movie/list');
+    }
+
+    /**
+     * Obtener lista de géneros de series
+     */
+    public function getTVGenres()
+    {
+        return $this->get('genre/tv/list');
+    }
+
+    /**
+     * Descubrir películas por género
+     */
+    public function discoverMovies($params = [])
+    {
+        return $this->get('discover/movie', $params);
+    }
+
+    /**
+     * Descubrir series por género
+     */
+    public function discoverTV($params = [])
+    {
+        return $this->get('discover/tv', $params);
+    }
+
+    // ==================== HELPERS ====================
+
+    /**
+     * Obtener URL completa de imagen
+     */
+    public function getImageUrl($path, $size = 'w500')
+    {
+        if (!$path) {
+            return null;
+        }
+        return $this->imageBaseUrl . $size . $path;
     }
 }

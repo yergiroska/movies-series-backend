@@ -84,26 +84,48 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/profile', [AuthController::class, 'deleteAccount']);
 });
 
+// Genres (tienen /list al final)
+Route::get('/movies/genres/list', [MovieController::class, 'genres']);
+Route::get('/tv/genres/list', [TVController::class, 'genres']);
+
+// Watch Providers (tienen /providers al final)
+Route::get('/movies/{id}/providers', [MovieController::class, 'getProviders']);
+Route::get('/tv/{id}/providers', [TVController::class, 'getProviders']);
+
+// Discover (ruta con query params, pero sin segmento extra)
+Route::get('/movies/discover', [MovieController::class, 'discover']);
+Route::get('/tv/discover', [TVController::class, 'discover']);
+
 // Rutas de Películas (públicas)
 Route::prefix('movies')->group(function () {
+    // Rutas con segmentos fijos después del prefijo
     Route::get('/popular', [MovieController::class, 'popular']);
     Route::get('/top-rated', [MovieController::class, 'topRated']);
     Route::get('/upcoming', [MovieController::class, 'upcoming']);
     Route::get('/search', [MovieController::class, 'search']);
-    Route::get('/{id}', [MovieController::class, 'show']);
+
+    // Rutas con sub-recursos (más específicas)
     Route::get('/{id}/similar', [MovieController::class, 'similar']);
+
+    // Ruta dinámica al final (captura cualquier ID numérico)
+    Route::get('/{id}', [MovieController::class, 'show'])->where('id', '[0-9]+');
+
 });
 
 // Rutas de Series (públicas)
 Route::prefix('tv')->group(function () {
+    // Rutas con segmentos fijos después del prefijo
     Route::get('/popular', [TVController::class, 'popular']);
     Route::get('/top-rated', [TVController::class, 'topRated']);
     Route::get('/on-the-air', [TVController::class, 'onTheAir']);
     Route::get('/search', [TVController::class, 'search']);
-    Route::get('/{id}', [TVController::class, 'show']);
+
+    // Rutas con sub-recursos (más específicas)
     Route::get('/{id}/similar', [TVController::class, 'similar']);
+
+    // Ruta dinámica al final (captura cualquier ID numérico)
+    Route::get('/{id}', [TVController::class, 'show'])->where('id', '[0-9]+');
+
 });
 
-// Watch Providers
-Route::get('/movies/{id}/providers', [MovieController::class, 'getProviders']);
-Route::get('/tv/{id}/providers', [TVController::class, 'getProviders']);
+
