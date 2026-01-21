@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Watchlist;
+use App\Services\TmdbService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,8 +39,6 @@ class WatchlistController extends Controller
         $request->validate([
             'tmdb_id' => 'required|integer',
             'media_type' => 'required|in:movie,tv',
-            'title' => 'required|string',
-            'poster_path' => 'nullable|string',
             'status' => 'nullable|in:watching,completed,plan_to_watch',
             'user_rating' => 'nullable|numeric|between:0,10',
             'notes' => 'nullable|string',
@@ -57,13 +56,28 @@ class WatchlistController extends Controller
             ], 409);
         }
 
+        $tmdbService = new TmdbService();
+        $tmdbData = null;
+        $title = '';
+        if($request->media_type === 'movie'  ){
+            $tmdbData = $tmdbService->getMovie($request->tmdb_id);
+            $title =  $tmdbData['title'];
+        }
+
+        if($request->media_type === 'tv'  ){
+            $tmdbData = $tmdbService->getTVShow($request->tmdb_id);
+            $title =  $tmdbData['name'];
+        }
+
+        $posterPath =  $tmdbData['backdrop_path'];
+
         $watchlist = Watchlist::create([
             'user_id' => Auth::id(),
             'tmdb_id' => $request->tmdb_id,
             'media_type' => $request->media_type,
-            'title' => $request->title,
-            'poster_path' => $request->poster_path,
-            'status' => $request->status ?? 'plan_to_watch',
+            'title' => $title,
+            'poster_path' => $posterPath,
+            'status' => $request->status ?? null,
             'user_rating' => $request->user_rating,
             'notes' => $request->notes,
         ]);

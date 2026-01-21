@@ -45,12 +45,19 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+        ], [
+            // Mensajes personalizados
+            'email.required' => 'El campo email es obligatorio',
+            'email.email' => 'El email debe ser una dirección válida',
+            'password.required' => 'El campo password es obligatorio',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => ['Las credenciales son incorrectas.'],
-            ]);
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Las credenciales son incorrectas'
+            ], 401);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();

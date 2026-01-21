@@ -232,4 +232,9 @@ class TmdbService
         }
         return $this->imageBaseUrl . $size . $path;
     }
+
+    public function getCineverse($type = 'movie', $id)
+    {
+        return $this->get("{$type}/{$id}");
+    }
 }

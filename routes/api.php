@@ -1,7 +1,10 @@
 <?php
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CineVerseController;
+use App\Http\Controllers\Api\CineVerseReviewController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\TVController;
 use App\Http\Controllers\Api\WatchlistController;
@@ -44,6 +47,12 @@ Route::get('/test', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/login', function () {
+    return response()->json([
+        'message' => 'Debes autenticarte para realizar esta acción',
+        'authenticated' => false
+    ], 401);
+})->name('login');
 // Rutas protegidas (requieren autenticación)
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -128,4 +137,23 @@ Route::prefix('tv')->group(function () {
 
 });
 
+Route::get('/hola', [CineVerseController::class, 'popular']);
 
+Route::prefix('cineverse')->group(function () {
+    Route::get('/popular/{type}', [CineVerseController::class, 'popular']);
+    Route::get('/{media_type}/{tmdbId}', [CineVerseController::class, 'show'])
+        ->where('media_type', 'movie|tv');
+    Route::post('/{media_type}/reviews/', [CineVerseReviewController::class, 'store'])
+        ->where('media_type', 'movie|tv')
+        ->name('cineverse.reviews.store');
+});
+
+
+// Reviews
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'index']);
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::put('/reviews/{id}', [ReviewController::class, 'update']);
+    Route::get('/reviews/{mediaType}/{tmdbId}', [ReviewController::class, 'show']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+});
