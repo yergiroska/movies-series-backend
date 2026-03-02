@@ -16,11 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('tmdb_id');
             $table->enum('media_type', ['movie', 'tv']);
-            $table->string('title');
-            $table->string('poster_path')->nullable();
             $table->enum('status', ['watching', 'completed', 'plan_to_watch'])->default('plan_to_watch');
-            $table->decimal('user_rating', 3, 1)->nullable();
-            $table->text('notes')->nullable();
             $table->timestamps();
 
             // Evitar duplicados

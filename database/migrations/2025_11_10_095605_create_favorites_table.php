@@ -16,10 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('tmdb_id');
             $table->enum('media_type', ['movie', 'tv']);
-            $table->string('title');
-            $table->string('poster_path')->nullable();
-            $table->text('overview')->nullable();
-            $table->timestamp('added_at')->useCurrent();
+            $table->timestamps();
 
             // Evitar duplicados: un usuario no puede tener el mismo favorito dos veces
             $table->unique(['user_id', 'tmdb_id', 'media_type']);
