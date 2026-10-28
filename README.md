@@ -2,6 +2,12 @@
 
 API RESTful construida con Laravel 11 para gestionar películas, series y usuarios.
 
+## Descripción
+
+CineVerse API provee toda la lógica backend para una aplicación full-stack de seguimiento de películas y series. Se integra con la **TMDB API** para obtener datos en tiempo real, y gestiona autenticación de usuarios, favoritos, listas de seguimiento, reseñas e historial de búsqueda.
+
+El frontend (React + Vite) está disponible en: [movies-series-frontend](https://github.com/yergiroska/movies-series-frontend).
+
 ## 🚀 Tecnologías
 
 - Laravel 11.31.0
